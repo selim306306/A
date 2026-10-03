@@ -1,3 +1,7 @@
+/* ============================================
+   مكتبة الأمين الذكية — النظام البصري الكامل
+   ============================================ */
+
 :root{
   --ink:#0A1628;--ink-2:#1A2E47;--ink-3:#2A4362;
   --paper:#FAF7F0;--paper-2:#F2EDE2;--surface:#fff;--surface-2:#FBF9F4;
@@ -98,7 +102,7 @@ h3{font-size:19px}
 .board-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .board-head strong{font-size:15px}.board-head small{color:var(--muted);font-size:12px}
 .board-profile{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--radius);background:linear-gradient(135deg,var(--ink),var(--ink-2));color:#fff}
-.profile-avatar{width:56px;height:56px;display:grid;place-items:center;border:2px solid var(--gold);border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--ink-3));font-size:20px;font-weight:700}
+.profile-avatar{width:56px;height:56px;display:grid;place-items:center;border:2px solid var(--gold);border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--ink-3));font-size:20px;font-weight:700;flex-shrink:0}
 .board-profile strong{display:block;font-size:14.5px;margin-bottom:2px}
 .board-profile small{color:rgba(255,255,255,.6);font-size:11.5px}
 
@@ -166,7 +170,7 @@ h3{font-size:19px}
 .quick-links{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .quick-card{display:flex;align-items:center;gap:12px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);transition:all .3s var(--ease)}
 .quick-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:var(--shadow)}
-.quick-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--gold-soft),#fff);font-size:22px}
+.quick-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--gold-soft),#fff);font-size:22px;flex-shrink:0}
 .quick-card strong{display:block;font-size:14px;margin-bottom:2px}
 .quick-card small{color:var(--muted);font-size:11px}
 
@@ -200,7 +204,7 @@ h3{font-size:19px}
 .chat-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line-2);background:linear-gradient(180deg,#fff,var(--surface-2))}
 .chat-head strong{font-size:15px}
 .chat-head small{display:block;color:var(--muted);font-size:11.5px}
-.bot-dot{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(14,124,123,.35)}
+.bot-dot{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(14,124,123,.35);flex-shrink:0}
 .chat-log{flex:1;display:grid;align-content:start;gap:12px;padding:22px;background:var(--surface-2);overflow-y:auto;max-height:400px}
 .message{max-width:84%;padding:12px 16px;border-radius:16px;font-size:13.5px;line-height:1.7;animation:msgIn .3s var(--ease-out)}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -214,23 +218,24 @@ h3{font-size:19px}
 .support-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
 .faq-list{display:grid;gap:10px}
 .faq-button{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:right;font:inherit;font-size:13.5px;font-weight:500;transition:all .25s var(--ease)}
-.faq-button:hover{border-color:var(--teal);background:rgba(14,124,123,.04);transform:translateX(-4px)}
+.faq-button:hover{border-color:var(--teal);background:rgba(14,124,123,.04)}
 
 .security-note{display:flex;gap:14px;padding:18px;border:1px solid #E8C99A;border-radius:var(--radius);background:linear-gradient(135deg,#FFF8EC,#FFF3E0);color:#734A1A;margin-bottom:24px}
 .security-note strong{display:block;margin-bottom:4px;color:#5A3512;font-size:14px}
 .security-note p{margin:0;font-size:12.5px;line-height:1.7}
 
 .dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.dashboard-card{padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-sm);transition:all .3s var(--ease)}
+.dashboard-card{padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-sm);transition:all .3s var(--ease);display:block}
 .dashboard-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
 .dashboard-card h3{margin-bottom:12px}
 .dashboard-card p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:14px}
 .dashboard-card .btn{margin-top:6px}
 
-.form-field{width:100%;padding:12px 16px;border:1.5px solid var(--line);border-radius:11px;font:inherit;background:#fff;transition:all .25s}
+.form-field{width:100%;padding:12px 16px;border:1.5px solid var(--line);border-radius:11px;font:inherit;background:#fff;transition:all .25s;color:var(--ink)}
 .form-field:focus{border-color:var(--teal);outline:0;box-shadow:0 0 0 4px rgba(14,124,123,.1)}
 
-table{width:100%;border-collapse:collapse}
+.table-card{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:600px}
 th,td{padding:15px 18px;border-bottom:1px solid var(--line-2);text-align:right;font-size:13px}
 th{background:var(--surface-2);color:var(--muted);font-weight:700;font-size:12px}
 tr:last-child td{border-bottom:0}
@@ -254,7 +259,9 @@ tr:last-child td{border-bottom:0}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
 .reveal.visible{opacity:1;transform:none}
 
-/* ===== RESPONSIVE ===== */
+/* ============================================
+   RESPONSIVE — الكمبيوتر والهاتف
+   ============================================ */
 @media(max-width:1080px){
   .primary-nav{display:none}
   .menu-toggle{display:grid}
@@ -268,17 +275,27 @@ tr:last-child td{border-bottom:0}
   .footer{grid-template-columns:1fr 1fr}
   .footer-meta{justify-items:start;text-align:right}
 }
+
+@media(max-width:900px){
+  /* إصلاح صفحات لوحة التحكم */
+  .page-shell .content-grid{grid-template-columns:1fr !important;gap:16px !important}
+  .page-shell .dashboard-grid{grid-template-columns:1fr !important}
+}
+
 @media(max-width:640px){
   :root{--gutter:18px}
-  .topbar{min-height:68px}
+  .topbar{min-height:68px;padding-block:10px}
   .brand-copy strong{font-size:14px}
   .brand-copy small{font-size:9.5px}
   .admin-link span{display:none}
+  .admin-link{padding:9px 12px}
   .hero{padding-top:48px;padding-bottom:48px}
   .hero h1{font-size:38px}
   .hero-actions .btn{width:100%}
   .page-hero{display:block}
+  .page-hero .btn{margin-top:16px}
   .section-head{display:block}
+  .section-head .text-link{margin-top:12px}
   .stats-grid,.catalog-grid,.dashboard-grid{grid-template-columns:1fr}
   .quick-links{grid-template-columns:1fr 1fr}
   .board-stats{grid-template-columns:1fr 1fr}
@@ -286,6 +303,22 @@ tr:last-child td{border-bottom:0}
   .assistant-bubble{display:none}
   .footer{grid-template-columns:1fr;padding:40px 20px}
   .footer-meta{justify-items:start}
+
+  /* لوحة التحكم على الهاتف */
+  .page-shell{padding:20px 14px 60px !important}
+  .page-shell .page-hero{padding:16px 0 20px !important}
+  .page-shell .page-hero h1{font-size:26px !important}
+  .page-shell .page-hero p{font-size:13px !important}
+  .page-shell .stats-grid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+  .page-shell .stat-card{padding:16px !important}
+  .page-shell .stat-card strong{font-size:24px !important}
+  .page-shell .card-body{padding:16px !important}
+  .page-shell .form-field{font-size:14px;padding:12px 14px}
+  .page-shell .btn{font-size:13px;padding:10px 16px;min-height:42px}
+  .page-shell h1,.page-shell h2,.page-shell h3{word-break:break-word}
+  .page-shell .content-grid{grid-template-columns:1fr !important}
+  .table-card table{min-width:500px;font-size:11px}
+  .table-card th,.table-card td{padding:8px 10px}
 }
 
 /* ===== DARK MODE ===== */
@@ -308,3 +341,4 @@ body.dark th{background:var(--surface-2)}
 body.dark .chat-log{background:var(--paper-2)}
 body.dark .message.bot{background:var(--surface-2);color:var(--ink)}
 body.dark .footer{background:linear-gradient(180deg,#060D16,#030810)}
+body.dark .security-note{background:linear-gradient(135deg,#3A2F1A,#2A2213);border-color:#5C4A2A;color:#E8D8B8}
