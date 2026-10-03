@@ -17,7 +17,6 @@ const FAQ = [
   "كيف أحصل على عضوية المكتبة؟"
 ];
 
-/* ============ Router ============ */
 const routes = {
   "/": renderHome,
   "/books": renderBooks,
@@ -62,9 +61,8 @@ document.addEventListener("click", e => {
 });
 window.addEventListener("hashchange", () => navigate(getPath(), false));
 
-/* ============ Utilities ============ */
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
 }[c]));
 
 function toast(msg) {
@@ -103,7 +101,7 @@ function renderBookRow(b) {
   </div>`;
 }
 
-/* ============ HOME ============ */
+/* ===== HOME ===== */
 async function renderHome() {
   const app = document.getElementById("app");
   app.innerHTML = `
@@ -111,7 +109,7 @@ async function renderHome() {
       <div class="hero-copy reveal">
         <p class="eyebrow">منصة المكتبة المدرسية الذكية</p>
         <h1>اكتشف <span>عالمًا</span> من المعرفة</h1>
-        <p class="lead">مكتبة مدرسة الأمين الابتدائية — فهرس رقمي، مسابقات، ومساعد ذكي متاح في أي وقت.</p>
+        <p class="lead">مكتبة مدرسة الأمين الابتدائية — فهرس رقمي، مسابقات، ومساعد ذكي.</p>
         <div class="hero-actions">
           <a class="btn primary lg" href="#/books" data-route>📚 ابحث عن كتابك</a>
           <a class="btn subtle lg" href="#/support" data-route>💬 اسأل المساعد</a>
@@ -141,11 +139,8 @@ async function renderHome() {
         </div>
       </aside>
     </section>
-
     <section class="section soft">
-      <div class="section-head reveal">
-        <div><h2>أرقام المكتبة</h2><p>نظرة سريعة على النشاط.</p></div>
-      </div>
+      <div class="section-head reveal"><div><h2>أرقام المكتبة</h2><p>نظرة سريعة على النشاط.</p></div></div>
       <div class="stats-grid">
         ${DEFAULT_STATS.map(s => `
           <div class="stat-card reveal">
@@ -156,50 +151,42 @@ async function renderHome() {
         `).join("")}
       </div>
     </section>
-
     <section class="section">
       <div class="content-grid">
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="section-head">
-              <h2 style="font-size:22px;margin:0">آخر الإعلانات</h2>
-              <a class="text-link" href="#/announcements" data-route>عرض الكل</a>
-            </div>
-            <div id="homeAnnouncements" class="announcement-list">
-              <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
-            </div>
+        <div class="card reveal"><div class="card-body">
+          <div class="section-head">
+            <h2 style="font-size:22px;margin:0">آخر الإعلانات</h2>
+            <a class="text-link" href="#/announcements" data-route>عرض الكل</a>
           </div>
-        </div>
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="section-head">
-              <h2 style="font-size:22px;margin:0">مسابقات نشطة</h2>
-              <a class="text-link" href="#/competitions" data-route>عرض الكل</a>
-            </div>
-            <div id="homeCompetitions" class="competition-list">
-              <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
-            </div>
+          <div id="homeAnnouncements" class="announcement-list">
+            <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
           </div>
-        </div>
+        </div></div>
+        <div class="card reveal"><div class="card-body">
+          <div class="section-head">
+            <h2 style="font-size:22px;margin:0">مسابقات نشطة</h2>
+            <a class="text-link" href="#/competitions" data-route>عرض الكل</a>
+          </div>
+          <div id="homeCompetitions" class="competition-list">
+            <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
+          </div>
+        </div></div>
       </div>
     </section>
-
     <section class="section soft">
       <div class="content-grid" style="grid-template-columns:1fr 1.2fr">
-        <div class="card reveal">
-          <div class="card-body">
-            <h2 style="font-size:22px;margin-bottom:6px">ابحث في الفهرس</h2>
-            <p style="color:var(--muted);font-size:13px;margin-bottom:16px">اكتب اسم الكتاب أو المؤلف أو التصنيف.</p>
-            <form class="search-box" id="homeSearch">
-              <span>⌕</span>
-              <input type="search" placeholder="مثال: قصص" id="homeSearchInput">
-              <button type="submit">ابحث</button>
-            </form>
-            <div class="book-results" id="homeResults">
-              <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
-            </div>
+        <div class="card reveal"><div class="card-body">
+          <h2 style="font-size:22px;margin-bottom:6px">ابحث في الفهرس</h2>
+          <p style="color:var(--muted);font-size:13px;margin-bottom:16px">اكتب اسم الكتاب أو المؤلف.</p>
+          <form class="search-box" id="homeSearch">
+            <span>⌕</span>
+            <input type="search" placeholder="مثال: قصص" id="homeSearchInput">
+            <button type="submit">ابحث</button>
+          </form>
+          <div class="book-results" id="homeResults">
+            <div style="padding:20px;text-align:center;color:var(--muted)">جاري التحميل...</div>
           </div>
-        </div>
+        </div></div>
         <div class="reveal">
           <h2 style="font-size:22px;margin-bottom:16px">وصول سريع</h2>
           <div class="quick-links">
@@ -211,12 +198,11 @@ async function renderHome() {
         </div>
       </div>
     </section>
-
     <section class="section">
       <div class="assistant-promo reveal">
         <div>
           <h2>مساعدك الذكي جاهز</h2>
-          <p>اسأل عن مواعيد الزيارة، الاستعارة، المسابقات — يجيبك فورًا بالعربية.</p>
+          <p>اسأل عن أي شيء يخص المكتبة — يجيبك فورًا بالعربية.</p>
           <a class="btn gold lg" href="#/support" data-route>ابدأ المحادثة ←</a>
         </div>
         <div class="assistant-bubble">✦</div>
@@ -226,9 +212,7 @@ async function renderHome() {
 
   try {
     const [books, announcements, competitions] = await Promise.all([
-      SB.fetchBooks(),
-      SB.fetchAnnouncements(),
-      SB.fetchCompetitions()
+      SB.fetchBooks(), SB.fetchAnnouncements(), SB.fetchCompetitions()
     ]);
 
     const statBooks = document.getElementById("statBooks");
@@ -246,7 +230,7 @@ async function renderHome() {
             </div>
           </div>`;
         }).join("")
-      : `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد إعلانات حاليًا.</div>`;
+      : `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد إعلانات.</div>`;
 
     document.getElementById("homeCompetitions").innerHTML = competitions.length
       ? competitions.slice(0, 3).map(c => {
@@ -260,11 +244,11 @@ async function renderHome() {
             </div>
           </div>`;
         }).join("")
-      : `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد مسابقات حاليًا.</div>`;
+      : `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد مسابقات.</div>`;
 
     document.getElementById("homeResults").innerHTML =
       books.slice(0, 3).map(renderBookRow).join("") ||
-      `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد كتب بعد.</div>`;
+      `<div style="padding:20px;text-align:center;color:var(--muted)">لا توجد كتب.</div>`;
 
     const form = document.getElementById("homeSearch");
     form.addEventListener("submit", e => {
@@ -284,18 +268,16 @@ async function renderHome() {
         ? found.slice(0, 8).map(renderBookRow).join("")
         : `<div style="padding:20px;text-align:center;color:var(--muted)"><strong>لا توجد نتائج</strong><br>جرّب كلمة أخرى.</div>`;
     });
-
   } catch (err) {
-    console.error("Home load error:", err);
+    console.error("Home error:", err);
     toast("تعذّر تحميل البيانات.");
   }
 }
 
-/* ============ BOOKS ============ */
+/* ===== BOOKS ===== */
 async function renderBooks() {
   const app = document.getElementById("app");
-  app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center;color:var(--muted)">جاري تحميل الفهرس...</div></section>`;
-
+  app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center;color:var(--muted)">جاري التحميل...</div></section>`;
   try {
     const books = await SB.fetchBooks();
     app.innerHTML = `
@@ -304,14 +286,16 @@ async function renderBooks() {
           <div>
             <p class="eyebrow">الفهرس الكامل</p>
             <h1>الكتب</h1>
-            <p>تصفّح المجموعة الكاملة المتاحة للاستعارة من المكتبة.</p>
+            <p>تصفّح المجموعة الكاملة.</p>
           </div>
         </div>
         ${books.length ? `
           <div class="catalog-grid">
             ${books.map(b => `
               <div class="catalog-card reveal">
-                <div class="catalog-cover">${esc((b.category || "?").slice(0, 8))}</div>
+                ${b.cover_url 
+                  ? `<img src="${esc(b.cover_url)}" alt="" style="flex:0 0 70px;height:96px;object-fit:cover;border-radius:5px 10px 3px 3px">` 
+                  : `<div class="catalog-cover">${esc((b.category || "?").slice(0, 8))}</div>`}
                 <div>
                   <h3>${esc(b.title)}</h3>
                   <p>${esc(b.author)}${b.description ? " — " + esc(b.description) : ""}</p>
@@ -320,16 +304,16 @@ async function renderBooks() {
               </div>
             `).join("")}
           </div>
-        ` : `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد كتب بعد.</div>`}
+        ` : `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد كتب.</div>`}
       </section>
     `;
   } catch (err) {
     console.error(err);
-    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center;color:var(--muted)">تعذّر التحميل.</div></section>`;
+    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center">تعذّر التحميل.</div></section>`;
   }
 }
 
-/* ============ COMPETITIONS ============ */
+/* ===== COMPETITIONS ===== */
 async function renderCompetitions() {
   const app = document.getElementById("app");
   try {
@@ -337,11 +321,7 @@ async function renderCompetitions() {
     app.innerHTML = `
       <section class="page-shell">
         <div class="page-hero reveal">
-          <div>
-            <p class="eyebrow">أنشطة تحفيزية</p>
-            <h1>المسابقات</h1>
-            <p>شارك في مسابقات المكتبة واربح جوائز قيّمة.</p>
-          </div>
+          <div><p class="eyebrow">أنشطة</p><h1>المسابقات</h1></div>
         </div>
         ${competitions.length ? `
           <div class="catalog-grid">
@@ -357,16 +337,15 @@ async function renderCompetitions() {
               </div>`;
             }).join("")}
           </div>
-        ` : `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد مسابقات حاليًا.</div>`}
+        ` : `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد مسابقات.</div>`}
       </section>
     `;
-  } catch (err) {
-    console.error(err);
-    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center;color:var(--muted)">تعذّر التحميل.</div></section>`;
+  } catch {
+    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center">تعذّر.</div></section>`;
   }
 }
 
-/* ============ ANNOUNCEMENTS ============ */
+/* ===== ANNOUNCEMENTS ===== */
 async function renderAnnouncements() {
   const app = document.getElementById("app");
   try {
@@ -374,11 +353,7 @@ async function renderAnnouncements() {
     app.innerHTML = `
       <section class="page-shell">
         <div class="page-hero reveal">
-          <div>
-            <p class="eyebrow">تابع الجديد</p>
-            <h1>الإعلانات</h1>
-            <p>كل ما يستجد في المكتبة من أخبار وإجراءات.</p>
-          </div>
+          <div><p class="eyebrow">تابع الجديد</p><h1>الإعلانات</h1></div>
         </div>
         <div class="card reveal">
           <div class="card-body">
@@ -399,54 +374,43 @@ async function renderAnnouncements() {
         </div>
       </section>
     `;
-  } catch (err) {
-    console.error(err);
-    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center;color:var(--muted)">تعذّر التحميل.</div></section>`;
+  } catch {
+    app.innerHTML = `<section class="page-shell"><div style="padding:40px;text-align:center">تعذّر.</div></section>`;
   }
 }
 
-/* ============ VISITORS ============ */
+/* ===== VISITORS ===== */
 function renderVisitors() {
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">تسجيل الوصول</p>
-          <h1>تسجيل زائر</h1>
-          <p>سجّل زيارتك للمكتبة في أقل من دقيقة.</p>
-        </div>
+        <div><p class="eyebrow">تسجيل</p><h1>زائر جديد</h1><p>سجّل زيارتك في أقل من دقيقة.</p></div>
       </div>
       <div class="content-grid">
-        <div class="card reveal">
-          <div class="card-body">
-            <h3 style="margin-bottom:16px">بيانات الزائر</h3>
-            <form id="visitorForm" style="display:grid;gap:14px">
-              <input class="form-field" name="name" placeholder="الاسم الكامل" required minlength="2">
-              <input class="form-field" name="affiliation" placeholder="الصف / الجهة" required>
-              <input class="form-field" name="purpose" placeholder="الغرض من الزيارة" required>
-              <button class="btn primary block" type="submit" id="visitorBtn">تسجيل الزيارة</button>
-            </form>
-          </div>
-        </div>
-        <div class="card reveal">
-          <div class="card-body">
-            <h3 style="margin-bottom:16px">معلومات</h3>
-            <p style="color:var(--muted);font-size:13px;line-height:1.8">
-              تسجيلك يساعدنا على تنظيم المكتبة وتحسين الخدمة.
-              البيانات محفوظة بأمان ولا تُشارك مع أي طرف ثالث.
-            </p>
-          </div>
-        </div>
+        <div class="card reveal"><div class="card-body">
+          <h3 style="margin-bottom:16px">بيانات الزائر</h3>
+          <form id="visitorForm" style="display:grid;gap:14px">
+            <input class="form-field" name="name" placeholder="الاسم الكامل" required minlength="2">
+            <input class="form-field" name="affiliation" placeholder="الصف / الجهة" required>
+            <input class="form-field" name="purpose" placeholder="الغرض" required>
+            <button class="btn primary block" type="submit" id="visitorBtn">تسجيل الزيارة</button>
+          </form>
+        </div></div>
+        <div class="card reveal"><div class="card-body">
+          <h3 style="margin-bottom:16px">معلومات</h3>
+          <p style="color:var(--muted);font-size:13px;line-height:1.8">
+            تسجيلك يساعدنا على تنظيم المكتبة وتحسين الخدمة.
+          </p>
+        </div></div>
       </div>
     </section>
   `;
-
   document.getElementById("visitorForm").addEventListener("submit", async e => {
     e.preventDefault();
     const btn = document.getElementById("visitorBtn");
     const form = e.target;
     btn.disabled = true;
-    btn.textContent = "...جاري التسجيل";
+    btn.textContent = "...جاري";
     try {
       await SB.saveVisitor({
         name: form.name.value.trim(),
@@ -454,10 +418,10 @@ function renderVisitors() {
         purpose: form.purpose.value.trim()
       });
       form.reset();
-      toast("✓ تم تسجيل الزيارة بنجاح");
+      toast("✓ تم تسجيل الزيارة");
     } catch (err) {
       console.error(err);
-      toast("تعذّر التسجيل. حاول مجددًا.");
+      toast("تعذّر التسجيل");
     } finally {
       btn.disabled = false;
       btn.textContent = "تسجيل الزيارة";
@@ -465,16 +429,12 @@ function renderVisitors() {
   });
 }
 
-/* ============ SUPPORT ============ */
+/* ===== SUPPORT ===== */
 function renderSupport() {
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">دعم فوري</p>
-          <h1>الدعم الذكي</h1>
-          <p>اسأل المساعد عن أي استفسار يخص المكتبة.</p>
-        </div>
+        <div><p class="eyebrow">دعم</p><h1>الدعم الذكي</h1></div>
       </div>
       <div class="support-layout">
         <div class="chat-card reveal">
@@ -486,7 +446,7 @@ function renderSupport() {
             </div>
           </div>
           <div class="chat-log" id="chatLog">
-            <div class="message bot">مرحبًا! كيف أقدر أساعدك اليوم؟</div>
+            <div class="message bot">مرحبًا! كيف أساعدك؟</div>
           </div>
           <form class="chat-form" id="chatForm">
             <input id="chatInput" placeholder="اكتب سؤالك..." autocomplete="off">
@@ -494,14 +454,12 @@ function renderSupport() {
           </form>
         </div>
         <div class="reveal">
-          <div class="card">
-            <div class="card-body">
-              <h3 style="margin-bottom:14px">أسئلة شائعة</h3>
-              <div class="faq-list">
-                ${FAQ.map(q => `<button class="faq-button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
-              </div>
+          <div class="card"><div class="card-body">
+            <h3 style="margin-bottom:14px">أسئلة شائعة</h3>
+            <div class="faq-list">
+              ${FAQ.map(q => `<button class="faq-button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
             </div>
-          </div>
+          </div></div>
         </div>
       </div>
     </section>
@@ -519,20 +477,17 @@ function renderSupport() {
     log.scrollTop = log.scrollHeight;
 
     const typingId = "typing-" + Date.now();
-    log.insertAdjacentHTML("beforeend",
-      `<div class="message bot" id="${typingId}">... يفكر</div>`);
+    log.insertAdjacentHTML("beforeend", `<div class="message bot" id="${typingId}">... يفكر</div>`);
     log.scrollTop = log.scrollHeight;
 
     try {
       const { answer } = await SB.askGemini(q);
       document.getElementById(typingId)?.remove();
-      log.insertAdjacentHTML("beforeend",
-        `<div class="message bot">${esc(answer)}</div>`);
+      log.insertAdjacentHTML("beforeend", `<div class="message bot">${esc(answer)}</div>`);
     } catch (err) {
       console.error(err);
       document.getElementById(typingId)?.remove();
-      log.insertAdjacentHTML("beforeend",
-        `<div class="message bot">عذرًا، حدث خطأ. حاول مجددًا.</div>`);
+      log.insertAdjacentHTML("beforeend", `<div class="message bot">عذرًا، حدث خطأ.</div>`);
     }
     log.scrollTop = log.scrollHeight;
   };
@@ -543,64 +498,17 @@ function renderSupport() {
   });
 }
 
-/* ============ DASHBOARD ============ */
+/* ===== DASHBOARD (تفويض للوحة الإدارة) ===== */
 function renderDashboard() {
-  document.getElementById("app").innerHTML = `
-    <section class="page-shell">
-      <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">منطقة الإدارة</p>
-          <h1>لوحة التحكم</h1>
-          <p>إدارة المكتبة والبيانات.</p>
-        </div>
-        <a class="btn primary" href="#/" data-route>← عودة</a>
-      </div>
-
-      <div class="security-note reveal">
-        <span style="font-size:22px">🛡️</span>
-        <div>
-          <strong>ملاحظة أمنية</strong>
-          <p>الموقع محمي بـ Row Level Security في Supabase. الكتابة والقراءة العامة محدودتان بالسياسات.</p>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="dashboard-card reveal">
-          <h3>📚 إدارة الكتب</h3>
-          <p>أضف وعدّل الكتب من لوحة Supabase مباشرة.</p>
-          <a class="btn subtle" href="#/books" data-route>عرض الفهرس</a>
-        </div>
-        <div class="dashboard-card reveal">
-          <h3>📢 الإعلانات</h3>
-          <p>انشر إعلانات جديدة من Supabase.</p>
-          <a class="btn subtle" href="#/announcements" data-route>عرض الإعلانات</a>
-        </div>
-        <div class="dashboard-card reveal">
-          <h3>🏆 المسابقات</h3>
-          <p>أضف مسابقات جديدة.</p>
-          <a class="btn subtle" href="#/competitions" data-route>عرض المسابقات</a>
-        </div>
-        <div class="dashboard-card reveal">
-          <h3>👥 الزوار</h3>
-          <p>راجع سجل الزوار من جدول visitors.</p>
-          <a class="btn subtle" href="#/visitors" data-route>تسجيل زائر</a>
-        </div>
-        <div class="dashboard-card reveal">
-          <h3>🗄️ قاعدة البيانات</h3>
-          <p>الوصول المباشر إلى Supabase.</p>
-          <a class="btn subtle" href="https://supabase.com/dashboard/project/zaztjrfhilmuvpcrrbji" target="_blank" rel="noopener">فتح Supabase</a>
-        </div>
-        <div class="dashboard-card reveal">
-          <h3>⚙️ الإعدادات</h3>
-          <p>الإعدادات المتقدمة قريبًا.</p>
-          <button class="btn subtle" type="button">قيد التطوير</button>
-        </div>
-      </div>
-    </section>
-  `;
+  if (window.ADMIN_ROUTES && window.ADMIN_ROUTES["/dashboard"]) {
+    window.ADMIN_ROUTES["/dashboard"]();
+  } else {
+    document.getElementById("app").innerHTML =
+      `<section class="page-shell"><div style="padding:40px;text-align:center">جاري التحميل...</div></section>`;
+  }
 }
 
-/* ============ Theme ============ */
+/* ===== Theme ===== */
 function initTheme() {
   const saved = localStorage.getItem("theme");
   if (saved === "dark" || (!saved && matchMedia("(prefers-color-scheme: dark)").matches)) {
@@ -612,33 +520,30 @@ function initTheme() {
   });
 }
 
-/* ============ Mobile menu ============ */
+/* ===== Mobile menu ===== */
 function initMenu() {
   document.getElementById("menuToggle").addEventListener("click", () => {
     const nav = document.querySelector(".primary-nav");
     const open = nav.style.display === "flex";
-    if (open) {
-      nav.removeAttribute("style");
-    } else {
-      Object.assign(nav.style, {
-        display: "flex",
-        position: "absolute",
-        top: "76px",
-        right: "16px",
-        left: "16px",
-        flexDirection: "column",
-        background: "var(--ink)",
-        padding: "16px",
-        borderRadius: "16px",
-        gap: "6px",
-        alignItems: "stretch",
-        boxShadow: "var(--shadow-lg)"
-      });
-    }
+    if (open) nav.removeAttribute("style");
+    else Object.assign(nav.style, {
+      display: "flex",
+      position: "absolute",
+      top: "76px",
+      right: "16px",
+      left: "16px",
+      flexDirection: "column",
+      background: "var(--ink)",
+      padding: "16px",
+      borderRadius: "16px",
+      gap: "6px",
+      alignItems: "stretch",
+      boxShadow: "var(--shadow-lg)"
+    });
   });
 }
 
-/* ============ Boot ============ */
+/* ===== Boot ===== */
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initMenu();
