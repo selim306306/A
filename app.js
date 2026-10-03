@@ -25,7 +25,12 @@ const routes = {
   "/announcements": renderAnnouncements,
   "/visitors": renderVisitors,
   "/support": renderSupport,
-  "/dashboard": renderDashboard
+  "/dashboard": renderDashboard,
+  "/dashboard/books": () => window.ADMIN_ROUTES?.["/dashboard/books"]?.(),
+  "/dashboard/announcements": () => window.ADMIN_ROUTES?.["/dashboard/announcements"]?.(),
+  "/dashboard/competitions": () => window.ADMIN_ROUTES?.["/dashboard/competitions"]?.(),
+  "/dashboard/visitors": () => window.ADMIN_ROUTES?.["/dashboard/visitors"]?.(),
+  "/dashboard/borrowings": () => window.ADMIN_ROUTES?.["/dashboard/borrowings"]?.()
 };
 
 function getPath() {
