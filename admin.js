@@ -8,7 +8,8 @@ const ADMIN_ROUTES = {
   "/dashboard/announcements": renderAdminAnnouncements,
   "/dashboard/competitions": renderAdminCompetitions,
   "/dashboard/visitors": renderAdminVisitors,
-  "/dashboard/borrowings": renderAdminBorrowings
+  "/dashboard/borrowings": renderAdminBorrowings,
+  "/dashboard/ai": renderAdminAI
 };
 
 async function getCurrentAdmin() {
@@ -122,6 +123,9 @@ async function renderAdminHome(user) {
         <a class="dashboard-card reveal" href="#/dashboard/borrowings" data-route>
           <h3>📖 الإعارات</h3><p>تسجيل استعارة وإرجاع.</p>
         </a>
+        <a class="dashboard-card reveal" href="#/dashboard/ai" data-route>
+          <h3>🤖 إعدادات الذكاء الاصطناعي</h3><p>مفتاح API، النموذج، اختبار الاتصال.</p>
+        </a>
         <a class="dashboard-card reveal" href="https://supabase.com/dashboard/project/zaztjrfhilmuvpcrrbji" target="_blank" rel="noopener">
           <h3>🗄️ قاعدة البيانات</h3><p>Supabase مباشرة.</p>
         </a>
@@ -140,6 +144,7 @@ async function renderAdminHome(user) {
   } catch (e) { console.warn(e); }
 }
 
+/* ===== الكتب ===== */
 async function renderAdminBooks() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -256,6 +261,7 @@ async function deleteBook(id, title) {
   refreshBooksList();
 }
 
+/* ===== الإعلانات ===== */
 async function renderAdminAnnouncements() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -328,6 +334,7 @@ async function deleteAnn(id) {
   refreshAnnList();
 }
 
+/* ===== المسابقات ===== */
 async function renderAdminCompetitions() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -400,6 +407,7 @@ async function deleteComp(id) {
   refreshCompList();
 }
 
+/* ===== الزوار ===== */
 async function renderAdminVisitors() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -465,6 +473,7 @@ function exportVisitorsCSV() {
   toast("✓ تم التصدير");
 }
 
+/* ===== الإعارات ===== */
 async function renderAdminBorrowings() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -587,6 +596,330 @@ async function returnBook(borrowId, bookId) {
   }
 }
 
+/* ===== إعدادات الذكاء الاصطناعي ===== */
+async function renderAdminAI() {
+  const user = await getCurrentAdmin();
+  if (!user) return navigate("/dashboard");
+
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <section class="page-shell">
+      <div class="page-hero reveal">
+        <div>
+          <p class="eyebrow">إدارة متقدمة</p>
+          <h1>إعدادات الذكاء الاصطناعي</h1>
+          <p>مفتاح API، النموذج، واختبار الاتصال.</p>
+        </div>
+        <a class="btn" href="#/dashboard" data-route>← رجوع</a>
+      </div>
+
+      <div class="content-grid" style="grid-template-columns:1.2fr .8fr">
+        <div class="card reveal">
+          <div class="card-body">
+            <h3 style="margin-bottom:16px">⚙️ إعدادات المساعد</h3>
+            <form id="aiForm" style="display:grid;gap:14px">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">
+                  مزوّد الذكاء الاصطناعي
+                </label>
+                <select class="form-field" name="provider" id="providerSelect">
+                  <option value="gemini">Google Gemini (مجاني)</option>
+                  <option value="openai">OpenAI (مدفوع)</option>
+                  <option value="anthropic">Anthropic Claude (مدفوع)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">
+                  النموذج
+                </label>
+                <select class="form-field" name="model_name" id="modelSelect">
+                  <!-- يمتلئ ديناميكيًا -->
+                </select>
+                <p style="color:var(--muted);font-size:11px;margin-top:6px" id="modelHint">
+                  أحدث النماذج المتاحة.
+                </p>
+              </div>
+
+              <div>
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">
+                  مفتاح API
+                </label>
+                <input class="form-field" name="api_key" type="password" 
+                       placeholder="الصق المفتاح هنا..." id="apiKeyInput" autocomplete="off">
+                <p style="color:var(--muted);font-size:11px;margin-top:6px">
+                  🔒 محفوظ في Supabase. الوصول مقصور على المشرفين.
+                </p>
+              </div>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn primary" type="submit" id="saveBtn">💾 حفظ الإعدادات</button>
+                <button class="btn gold" type="button" id="testBtn">🔬 اختبار الاتصال</button>
+              </div>
+            </form>
+
+            <div id="testResult" style="margin-top:16px;display:none"></div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="card">
+            <div class="card-body">
+              <h3 style="margin-bottom:14px">📖 كيف أحصل على مفتاح؟</h3>
+              
+              <div style="display:grid;gap:12px;font-size:13px;line-height:1.7">
+                <div>
+                  <strong style="color:var(--teal)">Google Gemini (مجاني):</strong>
+                  <ol style="padding-inline-start:20px;margin-top:4px;color:var(--muted)">
+                    <li>افتح <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--teal)">AI Studio</a></li>
+                    <li>سجّل بحساب Google</li>
+                    <li>اضغط "Create API key"</li>
+                    <li>انسخ المفتاح (يبدأ بـ AIzaSy)</li>
+                  </ol>
+                </div>
+
+                <div>
+                  <strong style="color:var(--teal)">OpenAI (مدفوع):</strong>
+                  <ol style="padding-inline-start:20px;margin-top:4px;color:var(--muted)">
+                    <li>افتح <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" style="color:var(--teal)">platform.openai.com</a></li>
+                    <li>أنشئ مفتاحًا (يبدأ بـ sk-)</li>
+                  </ol>
+                </div>
+
+                <div>
+                  <strong style="color:var(--teal)">Anthropic (مدفوع):</strong>
+                  <ol style="padding-inline-start:20px;margin-top:4px;color:var(--muted)">
+                    <li>افتح <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--teal)">console.anthropic.com</a></li>
+                    <li>أنشئ مفتاحًا (يبدأ بـ sk-ant-)</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div class="security-note" style="margin-top:16px;font-size:12px">
+                <span>🛡️</span>
+                <div>
+                  <strong>أمان</strong>
+                  <p>المفاتيح مشفّرة ومحمية بـ RLS. لا تظهر لأي زائر.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // قوائم النماذج لكل مزوّد — محدّثة لتشمل Gemini 3.5 وأعلى
+  const MODELS = {
+    gemini: [
+      { value: "gemini-3.8-flash", label: "Gemini 3.8 Flash (الأحدث)" },
+      { value: "gemini-3.7-flash", label: "Gemini 3.7 Flash" },
+      { value: "gemini-3.6-flash", label: "Gemini 3.6 Flash" },
+      { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (موصى به)" },
+      { value: "gemini-3.5-flash-lite", label: "Gemini 3.5 Flash-Lite" },
+      { value: "gemini-3.1-pro-preview", label: "Gemini 3.1 Pro (تجريبي)" },
+      { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (قديم)" },
+      { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (قديم)" }
+    ],
+    openai: [
+      { value: "gpt-4o", label: "GPT-4o (الأقوى)" },
+      { value: "gpt-4o-mini", label: "GPT-4o mini (اقتصادي)" },
+      { value: "gpt-4-turbo", label: "GPT-4 Turbo" }
+    ],
+    anthropic: [
+      { value: "claude-sonnet-4-20250514", label: "Claude Sonnet 4 (الأقوى)" },
+      { value: "claude-3-5-sonnet-20241022", label: "Claude 3.5 Sonnet" },
+      { value: "claude-3-5-haiku-20241022", label: "Claude 3.5 Haiku (سريع)" }
+    ]
+  };
+
+  const providerSelect = document.getElementById("providerSelect");
+  const modelSelect = document.getElementById("modelSelect");
+  const apiKeyInput = document.getElementById("apiKeyInput");
+  const modelHint = document.getElementById("modelHint");
+
+  function fillModels(provider, selected = null) {
+    modelSelect.innerHTML = "";
+    MODELS[provider].forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m.value;
+      opt.textContent = m.label;
+      if (m.value === selected) opt.selected = true;
+      modelSelect.appendChild(opt);
+    });
+    modelHint.textContent = {
+      gemini: "نماذج Google المجانية. 3.8 هو الأحدث.",
+      openai: "تحتاج رصيدًا في حسابك.",
+      anthropic: "تحتاج رصيدًا في حسابك."
+    }[provider] || "";
+  }
+
+  // جلب الإعدادات الحالية
+  try {
+    const { data } = await sb.from("ai_settings").select("*").order("updated_at", { ascending: false }).limit(1).single();
+    if (data) {
+      providerSelect.value = data.provider || "gemini";
+      fillModels(data.provider || "gemini", data.model_name);
+      if (data.api_key) {
+        const masked = data.api_key.slice(0, 6) + "..." + data.api_key.slice(-4);
+        apiKeyInput.placeholder = `محفوظ: ${masked} (اتركه فارغًا للإبقاء)`;
+        apiKeyInput.value = "";
+        apiKeyInput.dataset.saved = "true";
+      }
+    } else {
+      fillModels("gemini");
+    }
+  } catch (e) {
+    fillModels("gemini");
+  }
+
+  providerSelect.addEventListener("change", () => {
+    fillModels(providerSelect.value);
+  });
+
+  // حفظ الإعدادات
+  document.getElementById("aiForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const btn = document.getElementById("saveBtn");
+    btn.disabled = true;
+    btn.textContent = "...جاري الحفظ";
+
+    try {
+      const payload = {
+        provider: providerSelect.value,
+        model_name: modelSelect.value,
+        updated_at: new Date().toISOString()
+      };
+
+      const newKey = apiKeyInput.value.trim();
+      if (newKey) payload.api_key = newKey;
+
+      const { data: existing } = await sb.from("ai_settings").select("id").limit(1).maybeSingle();
+
+      let result;
+      if (existing) {
+        result = await sb.from("ai_settings").update(payload).eq("id", existing.id);
+      } else {
+        result = await sb.from("ai_settings").insert(payload);
+      }
+
+      if (result.error) throw result.error;
+
+      toast("✓ تم حفظ الإعدادات");
+      if (newKey) {
+        apiKeyInput.value = "";
+        apiKeyInput.placeholder = "محفوظ ✓";
+      }
+    } catch (err) {
+      console.error(err);
+      toast("خطأ: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "💾 حفظ الإعدادات";
+    }
+  });
+
+  // اختبار الاتصال
+  document.getElementById("testBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("testBtn");
+    const resultBox = document.getElementById("testResult");
+    btn.disabled = true;
+    btn.textContent = "...جاري الاختبار";
+    resultBox.style.display = "none";
+
+    try {
+      const { data } = await sb.from("ai_settings").select("*").limit(1).single();
+      if (!data?.api_key) {
+        throw new Error("لا يوجد مفتاح محفوظ. احفظ المفتاح أولًا.");
+      }
+
+      const testPrompt = "قل فقط: اختبار ناجح ✓";
+      let answer = "";
+
+      if (data.provider === "gemini") {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${data.model_name}:generateContent`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-goog-api-key": data.api_key
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: testPrompt }] }],
+            generationConfig: { temperature: 0.4, maxOutputTokens: 50 }
+          })
+        });
+        const json = await res.json();
+        if (!res.ok) {
+          throw new Error(json.error?.message || `HTTP ${res.status}`);
+        }
+        answer = json.candidates?.[0]?.content?.parts?.[0]?.text || "(لا يوجد رد)";
+      } else if (data.provider === "openai") {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${data.api_key}`
+          },
+          body: JSON.stringify({
+            model: data.model_name,
+            messages: [{ role: "user", content: testPrompt }],
+            max_tokens: 50
+          })
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error?.message || `HTTP ${res.status}`);
+        answer = json.choices?.[0]?.message?.content || "(لا يوجد رد)";
+      } else if (data.provider === "anthropic") {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": data.api_key,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true"
+          },
+          body: JSON.stringify({
+            model: data.model_name,
+            max_tokens: 50,
+            messages: [{ role: "user", content: testPrompt }]
+          })
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error?.message || `HTTP ${res.status}`);
+        answer = json.content?.[0]?.text || "(لا يوجد رد)";
+      }
+
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <div style="padding:14px;border-radius:12px;background:rgba(14,124,123,.1);border:1px solid var(--teal);color:var(--teal-dark)">
+          <strong>✅ الاتصال ناجح!</strong>
+          <p style="margin:6px 0 0;font-size:13px">
+            <strong>النموذج:</strong> ${esc(data.model_name)}<br>
+            <strong>الرد:</strong> ${esc(answer)}
+          </p>
+        </div>
+      `;
+      toast("✓ الاتصال ناجح");
+    } catch (err) {
+      console.error(err);
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <div style="padding:14px;border-radius:12px;background:rgba(179,75,61,.1);border:1px solid var(--brick);color:var(--brick)">
+          <strong>❌ فشل الاتصال</strong>
+          <p style="margin:6px 0 0;font-size:13px">${esc(err.message)}</p>
+          <p style="margin:6px 0 0;font-size:11px;color:var(--muted)">
+            تحقق من: صحة المفتاح، اسم النموذج، واتصال الإنترنت.
+          </p>
+        </div>
+      `;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🔬 اختبار الاتصال";
+    }
+  });
+}
+
 window.ADMIN_ROUTES = ADMIN_ROUTES;
 window.adminLogout = adminLogout;
 window.showBookForm = showBookForm;
@@ -596,3 +929,4 @@ window.deleteAnn = deleteAnn;
 window.deleteComp = deleteComp;
 window.exportVisitorsCSV = exportVisitorsCSV;
 window.returnBook = returnBook;
+window.renderAdminAI = renderAdminAI;
