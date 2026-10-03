@@ -11,7 +11,6 @@ const ADMIN_ROUTES = {
   "/dashboard/borrowings": renderAdminBorrowings
 };
 
-/* ===== التحقق من الجلسة ===== */
 async function getCurrentAdmin() {
   const { data: { session } } = await sb.auth.getSession();
   return session?.user || null;
@@ -33,13 +32,8 @@ async function adminLogout() {
 async function renderAdminLogin() {
   const app = document.getElementById("app");
   const user = await getCurrentAdmin();
+  if (user) return renderAdminHome(user);
 
-  if (user) {
-    // مسجّل — عرض لوحة الإدارة
-    return renderAdminHome(user);
-  }
-
-  // غير مسجّل — عرض نموذج الدخول
   app.innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
@@ -49,34 +43,29 @@ async function renderAdminLogin() {
           <p>سجّل الدخول للوصول إلى أدوات الإدارة.</p>
         </div>
       </div>
-
       <div class="content-grid" style="grid-template-columns:1fr 1fr">
         <div class="card reveal">
           <div class="card-body">
             <h3 style="margin-bottom:16px">تسجيل الدخول</h3>
             <form id="loginForm" style="display:grid;gap:14px">
-              <input class="form-field" name="email" type="email" 
-                     placeholder="البريد الإلكتروني" required autocomplete="email">
-              <input class="form-field" name="password" type="password" 
-                     placeholder="كلمة المرور" required autocomplete="current-password" minlength="8">
+              <input class="form-field" name="email" type="email" placeholder="البريد الإلكتروني" required autocomplete="email">
+              <input class="form-field" name="password" type="password" placeholder="كلمة المرور" required autocomplete="current-password" minlength="8">
               <button class="btn primary block" type="submit" id="loginBtn">دخول</button>
               <p id="loginError" style="color:var(--brick);font-size:13px;display:none"></p>
             </form>
           </div>
         </div>
-
         <div class="card reveal">
           <div class="card-body">
-            <h3 style="margin-bottom:12px">🛡️ ملاحظة أمنية</h3>
+            <h3 style="margin-bottom:12px">🛡️ منطقة آمنة</h3>
             <p style="color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:12px">
-              هذه المنطقة محمية بـ Supabase Auth. فقط المستخدمون المُصرّح لهم 
-              (المشرفون) يمكنهم الوصول إلى أدوات الإدارة.
+              هذه المنطقة محمية بـ Supabase Auth. فقط المشرفون يمكنهم الوصول.
             </p>
             <ul style="color:var(--muted);font-size:12.5px;line-height:1.9;padding-inline-start:20px">
-              <li>كلمة المرور مشفّرة بـ bcrypt</li>
-              <li>جلسة آمنة عبر JWT</li>
-              <li>Row Level Security فعّال</li>
-              <li>سجل الوصول متاح في Supabase</li>
+              <li>كلمة المرور مشفّرة</li>
+              <li>جلسة آمنة JWT</li>
+              <li>RLS فعّال</li>
+              <li>سجل وصول متاح</li>
             </ul>
           </div>
         </div>
@@ -92,7 +81,6 @@ async function renderAdminLogin() {
     btn.disabled = true;
     btn.textContent = "...جاري التحقق";
     err.style.display = "none";
-
     try {
       await adminLogin(form.email.value.trim(), form.password.value);
       toast("✓ مرحبًا بك");
@@ -106,207 +94,159 @@ async function renderAdminLogin() {
   });
 }
 
-/* ===== الصفحة الرئيسية للإدارة ===== */
 async function renderAdminHome(user) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
         <div>
-          <p class="eyebrow">مرحبًا، ${esc(user.email.split("@")[0])}</p>
+          <p class="eyebrow">مرحبًا</p>
           <h1>لوحة الإدارة</h1>
-          <p>إدارة كاملة للمكتبة.</p>
+          <p>${esc(user.email)}</p>
         </div>
-        <button class="btn" onclick="adminLogout()" type="button">تسجيل الخروج ←</button>
+        <button class="btn" onclick="adminLogout()" type="button">تسجيل الخروج</button>
       </div>
-
       <div class="stats-grid" id="adminStats">
         <div class="stat-card reveal"><strong>—</strong><span>كتاب</span></div>
         <div class="stat-card reveal"><strong>—</strong><span>زائر</span></div>
         <div class="stat-card reveal"><strong>—</strong><span>إعارة نشطة</span></div>
         <div class="stat-card reveal"><strong>—</strong><span>متأخر</span></div>
       </div>
-
       <div style="height:32px"></div>
-
       <div class="dashboard-grid">
         <a class="dashboard-card reveal" href="#/dashboard/books" data-route>
-          <h3>📚 الكتب</h3>
-          <p>إضافة، تعديل، حذف الكتب مع صور الأغلفة.</p>
+          <h3>📚 الكتب</h3><p>إضافة وتعديل الكتب مع صور الأغلفة.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/announcements" data-route>
-          <h3>📢 الإعلانات</h3>
-          <p>نشر وإدارة الإعلانات.</p>
+          <h3>📢 الإعلانات</h3><p>نشر وإدارة الإعلانات.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/competitions" data-route>
-          <h3>🏆 المسابقات</h3>
-          <p>إنشاء المسابقات ومتابعتها.</p>
+          <h3>🏆 المسابقات</h3><p>إنشاء ومتابعة المسابقات.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/visitors" data-route>
-          <h3>👥 الزوار</h3>
-          <p>سجل الزوار مع تصدير CSV.</p>
+          <h3>👥 الزوار</h3><p>سجل الزوار مع تصدير CSV.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/borrowings" data-route>
-          <h3>📖 الإعارات</h3>
-          <p>تسجيل استعارة وإرجاع الكتب.</p>
+          <h3>📖 الإعارات</h3><p>تسجيل استعارة وإرجاع الكتب.</p>
         </a>
         <a class="dashboard-card reveal" href="https://supabase.com/dashboard/project/zaztjrfhilmuvpcrrbji" target="_blank" rel="noopener">
-          <h3>🗄️ قاعدة البيانات</h3>
-          <p>الوصول المباشر إلى Supabase.</p>
+          <h3>🗄️ قاعدة البيانات</h3><p>الوصول المباشر إلى Supabase.</p>
         </a>
       </div>
     </section>
   `;
-
-  // جلب الإحصاءات
   try {
     const { data } = await sb.rpc("admin_stats");
     if (data) {
-      const cards = document.querySelectorAll("#adminStats .stat-card strong");
-      if (cards[0]) cards[0].textContent = data.books ?? "—";
-      if (cards[1]) cards[1].textContent = data.visitors ?? "—";
-      if (cards[2]) cards[2].textContent = data.borrowings_active ?? "—";
-      if (cards[3]) cards[3].textContent = data.borrowings_late ?? "—";
+      const c = document.querySelectorAll("#adminStats .stat-card strong");
+      if (c[0]) c[0].textContent = data.books ?? "—";
+      if (c[1]) c[1].textContent = data.visitors ?? "—";
+      if (c[2]) c[2].textContent = data.borrowings_active ?? "—";
+      if (c[3]) c[3].textContent = data.borrowings_late ?? "—";
     }
-  } catch (e) {
-    console.warn("Stats error:", e);
-  }
+  } catch (e) { console.warn(e); }
 }
 
-/* ===== إدارة الكتب ===== */
+/* ===== الكتب ===== */
 async function renderAdminBooks() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
-
-  const app = document.getElementById("app");
-  app.innerHTML = `
+  document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">إدارة الفهرس</p>
-          <h1>الكتب</h1>
-          <p>${""}</p>
-        </div>
+        <div><p class="eyebrow">إدارة</p><h1>الكتب</h1></div>
         <div style="display:flex;gap:8px">
           <a class="btn" href="#/dashboard" data-route>← رجوع</a>
           <button class="btn primary" onclick="showBookForm()" type="button">+ كتاب جديد</button>
         </div>
       </div>
-
       <div id="bookFormContainer"></div>
-      <div id="booksList" class="table-card reveal" style="padding:0;border-radius:16px;overflow:hidden">
-        <div style="padding:24px;text-align:center;color:var(--muted)">جاري التحميل...</div>
-      </div>
+      <div id="booksList" style="overflow:hidden;border-radius:16px"></div>
     </section>
   `;
-
-  await refreshBooksList();
+  refreshBooksList();
 }
 
 async function refreshBooksList() {
   const { data: books } = await sb.from("books").select("*").order("created_at", { ascending: false });
   const container = document.getElementById("booksList");
   if (!container) return;
-
   if (!books || !books.length) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد كتب. أضف أول كتاب!</div>`;
+    container.innerHTML = `<div class="card" style="padding:40px;text-align:center;color:var(--muted)">لا توجد كتب.</div>`;
     return;
   }
-
   container.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>الكتاب</th>
-          <th>المؤلف</th>
-          <th>التصنيف</th>
-          <th>المتاح</th>
-          <th>إجراءات</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${books.map(b => `
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:10px">
-                ${b.cover_url 
-                  ? `<img src="${esc(b.cover_url)}" alt="" style="width:36px;height:48px;object-fit:cover;border-radius:4px">` 
-                  : `<div class="book-cover" style="width:32px;height:44px;font-size:9px">${esc((b.category||"?").slice(0,4))}</div>`}
-                <strong>${esc(b.title)}</strong>
-              </div>
-            </td>
-            <td>${esc(b.author)}</td>
-            <td><span class="tag">${esc(b.category || "عام")}</span></td>
-            <td>${b.available_copies}/${b.total_copies}</td>
-            <td>
-              <button class="btn subtle" style="padding:4px 10px;font-size:12px" 
-                      onclick="editBook('${b.id}')" type="button">✏️</button>
-              <button class="btn subtle" style="padding:4px 10px;font-size:12px;color:var(--brick)" 
-                      onclick="deleteBook('${b.id}', '${esc(b.title).replace(/'/g, "\\'")}')" type="button">🗑️</button>
-            </td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>الكتاب</th><th>المؤلف</th><th>التصنيف</th><th>المتاح</th><th>إجراءات</th></tr></thead>
+        <tbody>
+          ${books.map(b => `
+            <tr>
+              <td><strong>${esc(b.title)}</strong></td>
+              <td>${esc(b.author)}</td>
+              <td><span class="tag">${esc(b.category || "عام")}</span></td>
+              <td>${b.available_copies}/${b.total_copies}</td>
+              <td>
+                <button class="btn subtle" style="padding:4px 10px;font-size:12px" onclick="editBook('${b.id}')" type="button">✏️</button>
+                <button class="btn subtle" style="padding:4px 10px;font-size:12px;color:var(--brick)" onclick="deleteBook('${b.id}','${esc(b.title)}')" type="button">🗑️</button>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
   `;
 }
 
 function showBookForm(book = null) {
   const container = document.getElementById("bookFormContainer");
   container.innerHTML = `
-    <div class="card reveal" style="margin-bottom:20px">
+    <div class="card" style="margin-bottom:20px">
       <div class="card-body">
-        <h3 style="margin-bottom:16px">${book ? "تعديل كتاب" : "إضافة كتاب جديد"}</h3>
+        <h3 style="margin-bottom:16px">${book ? "تعديل كتاب" : "كتاب جديد"}</h3>
         <form id="bookForm" style="display:grid;gap:14px">
           <input type="hidden" name="id" value="${book?.id || ""}">
-          <input class="form-field" name="title" placeholder="عنوان الكتاب *" required value="${esc(book?.title || "")}">
+          <input class="form-field" name="title" placeholder="العنوان *" required value="${esc(book?.title || "")}">
           <input class="form-field" name="author" placeholder="المؤلف *" required value="${esc(book?.author || "")}">
-          <input class="form-field" name="category" placeholder="التصنيف (ديني، علوم، ...)" value="${esc(book?.category || "")}">
-          <input class="form-field" name="isbn" placeholder="ISBN (اختياري)" value="${esc(book?.isbn || "")}">
-          <input class="form-field" name="cover_url" placeholder="رابط صورة الغلاف (اختياري)" value="${esc(book?.cover_url || "")}">
-          <textarea class="form-field" name="description" placeholder="وصف مختصر" rows="2">${esc(book?.description || "")}</textarea>
+          <input class="form-field" name="category" placeholder="التصنيف" value="${esc(book?.category || "")}">
+          <input class="form-field" name="cover_url" placeholder="رابط صورة الغلاف" value="${esc(book?.cover_url || "")}">
+          <textarea class="form-field" name="description" placeholder="وصف" rows="2">${esc(book?.description || "")}</textarea>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <input class="form-field" name="total_copies" type="number" min="1" placeholder="عدد النسخ" value="${book?.total_copies || 1}">
-            <input class="form-field" name="available_copies" type="number" min="0" placeholder="المتاح" value="${book?.available_copies || 1}">
+            <input class="form-field" name="total_copies" type="number" min="1" value="${book?.total_copies || 1}">
+            <input class="form-field" name="available_copies" type="number" min="0" value="${book?.available_copies || 1}">
           </div>
           <div style="display:flex;gap:10px">
-            <button class="btn primary" type="submit">${book ? "حفظ التعديلات" : "إضافة الكتاب"}</button>
+            <button class="btn primary" type="submit">${book ? "حفظ" : "إضافة"}</button>
             <button class="btn subtle" type="button" onclick="document.getElementById('bookFormContainer').innerHTML=''">إلغاء</button>
           </div>
         </form>
       </div>
     </div>
   `;
-
   document.getElementById("bookForm").addEventListener("submit", async e => {
     e.preventDefault();
     const form = e.target;
-    const id = form.id.value;
     const payload = {
       title: form.title.value.trim(),
       author: form.author.value.trim(),
       category: form.category.value.trim() || null,
-      isbn: form.isbn.value.trim() || null,
       cover_url: form.cover_url.value.trim() || null,
       description: form.description.value.trim() || null,
       total_copies: parseInt(form.total_copies.value) || 1,
       available_copies: parseInt(form.available_copies.value) || 1
     };
-
     try {
-      let error;
-      if (id) {
-        ({ error } = await sb.from("books").update(payload).eq("id", id));
-      } else {
-        ({ error } = await sb.from("books").insert(payload));
-      }
-      if (error) throw error;
-      toast(id ? "✓ تم حفظ التعديلات" : "✓ تمت إضافة الكتاب");
+      const id = form.id.value;
+      let result;
+      if (id) result = await sb.from("books").update(payload).eq("id", id);
+      else result = await sb.from("books").insert(payload);
+      if (result.error) throw result.error;
+      toast(id ? "✓ تم الحفظ" : "✓ تمت الإضافة");
       document.getElementById("bookFormContainer").innerHTML = "";
       refreshBooksList();
-    } catch (e) {
-      console.error(e);
-      toast("خطأ: " + (e.message || "تعذّر الحفظ"));
+    } catch (err) {
+      console.error(err);
+      toast("خطأ: " + err.message);
     }
   });
 }
@@ -324,37 +264,30 @@ async function deleteBook(id, title) {
   refreshBooksList();
 }
 
-/* ===== إدارة الإعلانات ===== */
+/* ===== الإعلانات ===== */
 async function renderAdminAnnouncements() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
-
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">إدارة المحتوى</p>
-          <h1>الإعلانات</h1>
-        </div>
-        <div style="display:flex;gap:8px">
-          <a class="btn" href="#/dashboard" data-route>← رجوع</a>
-        </div>
+        <div><p class="eyebrow">محتوى</p><h1>الإعلانات</h1></div>
+        <a class="btn" href="#/dashboard" data-route>← رجوع</a>
       </div>
-      <div class="card reveal" style="margin-bottom:20px">
+      <div class="card" style="margin-bottom:20px">
         <div class="card-body">
-          <h3 style="margin-bottom:16px">إضافة إعلان</h3>
+          <h3 style="margin-bottom:16px">إعلان جديد</h3>
           <form id="annForm" style="display:grid;gap:14px">
             <input class="form-field" name="title" placeholder="العنوان *" required>
             <textarea class="form-field" name="body" placeholder="النص *" required rows="3"></textarea>
-            <input class="form-field" name="tag" placeholder="وسم (جديد، تنبيه، مبادرة)">
-            <button class="btn primary" type="submit">نشر الإعلان</button>
+            <input class="form-field" name="tag" placeholder="وسم">
+            <button class="btn primary" type="submit">نشر</button>
           </form>
         </div>
       </div>
-      <div id="annList" class="card reveal"></div>
+      <div id="annList"></div>
     </section>
   `;
-
   document.getElementById("annForm").addEventListener("submit", async e => {
     e.preventDefault();
     const form = e.target;
@@ -369,7 +302,6 @@ async function renderAdminAnnouncements() {
     form.reset();
     refreshAnnList();
   });
-
   refreshAnnList();
 }
 
@@ -378,67 +310,57 @@ async function refreshAnnList() {
   const container = document.getElementById("annList");
   if (!container) return;
   if (!data?.length) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد إعلانات.</div>`;
+    container.innerHTML = `<div class="card" style="padding:40px;text-align:center;color:var(--muted)">لا توجد إعلانات.</div>`;
     return;
   }
   container.innerHTML = `
-    <div class="card-body">
-      ${data.map(a => {
-        const d = new Date(a.published_at);
-        return `
-          <div class="announcement-item">
-            <div class="date-box"><strong>${d.getDate()}</strong><small>${monthName(d.getMonth())}</small></div>
-            <div class="item-content">
-              <h3>${esc(a.title)}</h3>
-              <p>${esc(a.body || "")}</p>
-              <span class="tag">${esc(a.tag || "إعلان")}</span>
-            </div>
-            <button class="btn subtle" style="color:var(--brick);padding:4px 10px;font-size:12px" 
-                    onclick="deleteAnn('${a.id}')" type="button">🗑️</button>
+    <div class="card"><div class="card-body">
+      ${data.map(a => `
+        <div class="announcement-item">
+          <div class="item-content">
+            <h3>${esc(a.title)}</h3>
+            <p>${esc(a.body || "")}</p>
+            <span class="tag">${esc(a.tag || "إعلان")}</span>
           </div>
-        `;
-      }).join("")}
-    </div>
+          <button class="btn subtle" style="color:var(--brick);padding:4px 10px;font-size:12px" onclick="deleteAnn('${a.id}')" type="button">🗑️</button>
+        </div>
+      `).join("")}
+    </div></div>
   `;
 }
 
 async function deleteAnn(id) {
-  if (!confirm("حذف هذا الإعلان؟")) return;
+  if (!confirm("حذف؟")) return;
   const { error } = await sb.from("announcements").delete().eq("id", id);
-  if (error) { toast("تعذّر الحذف"); return; }
+  if (error) { toast("تعذّر"); return; }
   toast("✓ تم الحذف");
   refreshAnnList();
 }
 
-/* ===== إدارة المسابقات ===== */
+/* ===== المسابقات ===== */
 async function renderAdminCompetitions() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
-
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">إدارة المحتوى</p>
-          <h1>المسابقات</h1>
-        </div>
+        <div><p class="eyebrow">محتوى</p><h1>المسابقات</h1></div>
         <a class="btn" href="#/dashboard" data-route>← رجوع</a>
       </div>
-      <div class="card reveal" style="margin-bottom:20px">
+      <div class="card" style="margin-bottom:20px">
         <div class="card-body">
-          <h3 style="margin-bottom:16px">إضافة مسابقة</h3>
+          <h3 style="margin-bottom:16px">مسابقة جديدة</h3>
           <form id="compForm" style="display:grid;gap:14px">
-            <input class="form-field" name="title" placeholder="عنوان المسابقة *" required>
+            <input class="form-field" name="title" placeholder="العنوان *" required>
             <textarea class="form-field" name="body" placeholder="الوصف *" required rows="3"></textarea>
             <input class="form-field" name="deadline" type="date" required>
-            <button class="btn primary" type="submit">إضافة المسابقة</button>
+            <button class="btn primary" type="submit">إضافة</button>
           </form>
         </div>
       </div>
-      <div id="compList" class="card reveal"></div>
+      <div id="compList"></div>
     </section>
   `;
-
   document.getElementById("compForm").addEventListener("submit", async e => {
     e.preventDefault();
     const form = e.target;
@@ -448,12 +370,11 @@ async function renderAdminCompetitions() {
       deadline: form.deadline.value,
       active: true
     });
-    if (error) { toast("تعذّرت الإضافة"); return; }
+    if (error) { toast("تعذّرت"); return; }
     toast("✓ تمت الإضافة");
     form.reset();
     refreshCompList();
   });
-
   refreshCompList();
 }
 
@@ -462,61 +383,49 @@ async function refreshCompList() {
   const container = document.getElementById("compList");
   if (!container) return;
   if (!data?.length) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد مسابقات.</div>`;
+    container.innerHTML = `<div class="card" style="padding:40px;text-align:center;color:var(--muted)">لا توجد مسابقات.</div>`;
     return;
   }
   container.innerHTML = `
-    <div class="card-body">
-      ${data.map(c => {
-        const d = new Date(c.deadline);
-        return `
-          <div class="competition-item">
-            <div class="date-box"><strong>${d.getDate()}</strong><small>${monthName(d.getMonth())}</small></div>
-            <div class="item-content">
-              <h3>${esc(c.title)}</h3>
-              <p>${esc(c.body || "")}</p>
-              <span class="tag">${c.active ? "نشطة" : "معطلة"}</span>
-            </div>
-            <button class="btn subtle" style="color:var(--brick);padding:4px 10px;font-size:12px" 
-                    onclick="deleteComp('${c.id}')" type="button">🗑️</button>
+    <div class="card"><div class="card-body">
+      ${data.map(c => `
+        <div class="competition-item">
+          <div class="item-content">
+            <h3>${esc(c.title)}</h3>
+            <p>${esc(c.body || "")}</p>
+            <span class="tag">${c.active ? "نشطة" : "معطلة"}</span>
           </div>
-        `;
-      }).join("")}
-    </div>
+          <button class="btn subtle" style="color:var(--brick);padding:4px 10px;font-size:12px" onclick="deleteComp('${c.id}')" type="button">🗑️</button>
+        </div>
+      `).join("")}
+    </div></div>
   `;
 }
 
 async function deleteComp(id) {
-  if (!confirm("حذف هذه المسابقة؟")) return;
+  if (!confirm("حذف؟")) return;
   const { error } = await sb.from("competitions").delete().eq("id", id);
-  if (error) { toast("تعذّر الحذف"); return; }
+  if (error) { toast("تعذّر"); return; }
   toast("✓ تم الحذف");
   refreshCompList();
 }
 
-/* ===== سجل الزوار ===== */
+/* ===== الزوار ===== */
 async function renderAdminVisitors() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
-
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">السجلات</p>
-          <h1>الزوار</h1>
-        </div>
+        <div><p class="eyebrow">سجلات</p><h1>الزوار</h1></div>
         <div style="display:flex;gap:8px">
           <a class="btn" href="#/dashboard" data-route>← رجوع</a>
-          <button class="btn gold" onclick="exportVisitorsCSV()" type="button">⬇ تصدير CSV</button>
+          <button class="btn gold" onclick="exportVisitorsCSV()" type="button">⬇ CSV</button>
         </div>
       </div>
-      <div id="visitorsList" class="table-card reveal" style="padding:0;border-radius:16px;overflow:hidden">
-        <div style="padding:24px;text-align:center;color:var(--muted)">جاري التحميل...</div>
-      </div>
+      <div id="visitorsList"></div>
     </section>
   `;
-
   refreshVisitorsList();
 }
 
@@ -527,49 +436,34 @@ async function refreshVisitorsList() {
   _visitorsCache = data || [];
   const container = document.getElementById("visitorsList");
   if (!container) return;
-
   if (!data?.length) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted)">لا يوجد زوار بعد.</div>`;
+    container.innerHTML = `<div class="card" style="padding:40px;text-align:center;color:var(--muted)">لا يوجد زوار.</div>`;
     return;
   }
-
   container.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>الاسم</th>
-          <th>الصف / الجهة</th>
-          <th>الغرض</th>
-          <th>التاريخ</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.map(v => {
-          const d = new Date(v.visited_at);
-          return `
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>الاسم</th><th>الصف/الجهة</th><th>الغرض</th><th>التاريخ</th></tr></thead>
+        <tbody>
+          ${data.map(v => `
             <tr>
               <td><strong>${esc(v.name)}</strong></td>
               <td>${esc(v.affiliation || "—")}</td>
               <td>${esc(v.purpose || "—")}</td>
-              <td>${d.toLocaleDateString("ar-EG")} ${d.toLocaleTimeString("ar-EG", {hour: "2-digit", minute: "2-digit"})}</td>
+              <td>${new Date(v.visited_at).toLocaleString("ar-EG")}</td>
             </tr>
-          `;
-        }).join("")}
-      </tbody>
-    </table>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
   `;
 }
 
 function exportVisitorsCSV() {
-  if (!_visitorsCache.length) { toast("لا يوجد زوار للتصدير"); return; }
+  if (!_visitorsCache.length) { toast("لا يوجد زوار"); return; }
   const rows = [["الاسم", "الصف/الجهة", "الغرض", "التاريخ"]];
   _visitorsCache.forEach(v => {
-    rows.push([
-      v.name || "",
-      v.affiliation || "",
-      v.purpose || "",
-      new Date(v.visited_at).toLocaleString("ar-EG")
-    ]);
+    rows.push([v.name || "", v.affiliation || "", v.purpose || "", new Date(v.visited_at).toLocaleString("ar-EG")]);
   });
   const csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -586,19 +480,15 @@ function exportVisitorsCSV() {
 async function renderAdminBorrowings() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
-
   document.getElementById("app").innerHTML = `
     <section class="page-shell">
       <div class="page-hero reveal">
-        <div>
-          <p class="eyebrow">نظام الاستعارة</p>
-          <h1>الإعارات</h1>
-        </div>
+        <div><p class="eyebrow">إدارة</p><h1>الإعارات</h1></div>
         <a class="btn" href="#/dashboard" data-route>← رجوع</a>
       </div>
-      <div class="card reveal" style="margin-bottom:20px">
+      <div class="card" style="margin-bottom:20px">
         <div class="card-body">
-          <h3 style="margin-bottom:16px">تسجيل استعارة</h3>
+          <h3 style="margin-bottom:16px">استعارة جديدة</h3>
           <form id="borrowForm" style="display:grid;gap:14px">
             <select class="form-field" name="book_id" id="bookSelect" required>
               <option value="">اختر الكتاب...</option>
@@ -611,11 +501,9 @@ async function renderAdminBorrowings() {
           </form>
         </div>
       </div>
-      <div id="borrowList" class="table-card reveal" style="padding:0;border-radius:16px;overflow:hidden"></div>
+      <div id="borrowList"></div>
     </section>
   `;
-
-  // جلب الكتب للقائمة
   const { data: books } = await sb.from("books").select("id,title,available_copies").order("title");
   const sel = document.getElementById("bookSelect");
   if (books) {
@@ -627,107 +515,83 @@ async function renderAdminBorrowings() {
       sel.appendChild(opt);
     });
   }
-
   document.getElementById("borrowForm").addEventListener("submit", async e => {
     e.preventDefault();
     const form = e.target;
     const bookId = form.book_id.value;
-    const payload = {
-      book_id: bookId,
-      borrower_name: form.borrower_name.value.trim(),
-      borrower_class: form.borrower_class.value.trim() || null,
-      borrower_phone: form.borrower_phone.value.trim() || null,
-      due_at: new Date(form.due_at.value).toISOString(),
-      status: "active"
-    };
     try {
-      const { error } = await sb.from("borrowings").insert(payload);
+      const { error } = await sb.from("borrowings").insert({
+        book_id: bookId,
+        borrower_name: form.borrower_name.value.trim(),
+        borrower_class: form.borrower_class.value.trim() || null,
+        borrower_phone: form.borrower_phone.value.trim() || null,
+        due_at: new Date(form.due_at.value).toISOString(),
+        status: "active"
+      });
       if (error) throw error;
-      // خصم نسخة
       const { data: book } = await sb.from("books").select("available_copies").eq("id", bookId).single();
       if (book && book.available_copies > 0) {
         await sb.from("books").update({ available_copies: book.available_copies - 1 }).eq("id", bookId);
       }
       toast("✓ تم تسجيل الاستعارة");
-      form.reset();
       renderAdminBorrowings();
-    } catch (e) {
-      console.error(e);
-      toast("خطأ: " + (e.message || "تعذّر التسجيل"));
+    } catch (err) {
+      console.error(err);
+      toast("خطأ: " + err.message);
     }
   });
-
   refreshBorrowList();
 }
 
 async function refreshBorrowList() {
-  const { data } = await sb.from("borrowings")
-    .select("*, books(title)")
-    .order("borrowed_at", { ascending: false })
-    .limit(100);
+  const { data } = await sb.from("borrowings").select("*, books(title)").order("borrowed_at", { ascending: false }).limit(100);
   const container = document.getElementById("borrowList");
   if (!container) return;
-
   if (!data?.length) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted)">لا توجد إعارات.</div>`;
+    container.innerHTML = `<div class="card" style="padding:40px;text-align:center;color:var(--muted)">لا توجد إعارات.</div>`;
     return;
   }
-
   const now = new Date();
   container.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>الكتاب</th>
-          <th>المستعير</th>
-          <th>الاستعارة</th>
-          <th>الاستحقاق</th>
-          <th>الحالة</th>
-          <th>إجراء</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.map(b => {
-          const due = new Date(b.due_at);
-          const isLate = b.status === "active" && due < now;
-          const statusLabel = b.status === "returned" ? "مُرجَع" : (isLate ? "متأخر" : "نشط");
-          const statusColor = b.status === "returned" ? "var(--teal)" : (isLate ? "var(--brick)" : "var(--gold-dark)");
-          return `
-            <tr>
-              <td><strong>${esc(b.books?.title || "—")}</strong></td>
-              <td>${esc(b.borrower_name)}${b.borrower_class ? ` (${esc(b.borrower_class)})` : ""}</td>
-              <td>${new Date(b.borrowed_at).toLocaleDateString("ar-EG")}</td>
-              <td>${due.toLocaleDateString("ar-EG")}</td>
-              <td><span style="color:${statusColor};font-weight:700">${statusLabel}</span></td>
-              <td>
-                ${b.status === "active" 
-                  ? `<button class="btn subtle" style="padding:4px 10px;font-size:12px" 
-                            onclick="returnBook('${b.id}', '${b.book_id}')" type="button">📥 إرجاع</button>` 
-                  : "—"}
-              </td>
-            </tr>
-          `;
-        }).join("")}
-      </tbody>
-    </table>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>الكتاب</th><th>المستعير</th><th>الاستحقاق</th><th>الحالة</th><th>إجراء</th></tr></thead>
+        <tbody>
+          ${data.map(b => {
+            const due = new Date(b.due_at);
+            const isLate = b.status === "active" && due < now;
+            const label = b.status === "returned" ? "مُرجَع" : (isLate ? "متأخر" : "نشط");
+            const color = b.status === "returned" ? "var(--teal)" : (isLate ? "var(--brick)" : "var(--gold-dark)");
+            return `
+              <tr>
+                <td><strong>${esc(b.books?.title || "—")}</strong></td>
+                <td>${esc(b.borrower_name)}</td>
+                <td>${due.toLocaleDateString("ar-EG")}</td>
+                <td><span style="color:${color};font-weight:700">${label}</span></td>
+                <td>
+                  ${b.status === "active" 
+                    ? `<button class="btn subtle" style="padding:4px 10px;font-size:12px" onclick="returnBook('${b.id}','${b.book_id}')" type="button">📥 إرجاع</button>` 
+                    : "—"}
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
   `;
 }
 
 async function returnBook(borrowId, bookId) {
-  if (!confirm("تأكيد إرجاع الكتاب؟")) return;
+  if (!confirm("تأكيد الإرجاع؟")) return;
   try {
-    await sb.from("borrowings").update({ 
-      status: "returned", 
-      returned_at: new Date().toISOString() 
-    }).eq("id", borrowId);
-
-    // إعادة النسخة
+    await sb.from("borrowings").update({ status: "returned", returned_at: new Date().toISOString() }).eq("id", borrowId);
     const { data: book } = await sb.from("books").select("available_copies,total_copies").eq("id", bookId).single();
     if (book) {
-      const newAvail = Math.min(book.available_copies + 1, book.total_copies);
-      await sb.from("books").update({ available_copies: newAvail }).eq("id", bookId);
+      const n = Math.min(book.available_copies + 1, book.total_copies);
+      await sb.from("books").update({ available_copies: n }).eq("id", bookId);
     }
-    toast("✓ تم إرجاع الكتاب");
+    toast("✓ تم الإرجاع");
     refreshBorrowList();
   } catch (e) {
     console.error(e);
@@ -735,7 +599,6 @@ async function returnBook(borrowId, bookId) {
   }
 }
 
-/* ===== ربط لوحة الإدارة بالتوجيه ===== */
 window.ADMIN_ROUTES = ADMIN_ROUTES;
 window.adminLogout = adminLogout;
 window.showBookForm = showBookForm;
