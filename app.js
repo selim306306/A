@@ -29,7 +29,8 @@ const routes = {
   "/dashboard/announcements": () => window.ADMIN_ROUTES?.["/dashboard/announcements"]?.(),
   "/dashboard/competitions": () => window.ADMIN_ROUTES?.["/dashboard/competitions"]?.(),
   "/dashboard/visitors": () => window.ADMIN_ROUTES?.["/dashboard/visitors"]?.(),
-  "/dashboard/borrowings": () => window.ADMIN_ROUTES?.["/dashboard/borrowings"]?.()
+  "/dashboard/borrowings": () => window.ADMIN_ROUTES?.["/dashboard/borrowings"]?.(),
+  "/dashboard/ai": () => window.ADMIN_ROUTES?.["/dashboard/ai"]?.()
 };
 
 function getPath() {
@@ -487,7 +488,7 @@ function renderSupport() {
     } catch (err) {
       console.error(err);
       document.getElementById(typingId)?.remove();
-      log.insertAdjacentHTML("beforeend", `<div class="message bot">عذرًا، حدث خطأ.</div>`);
+      log.insertAdjacentHTML("beforeend", `<div class="message bot">عذرًا، حدث خطأ. تأكد من إعداد مفتاح API في لوحة التحكم.</div>`);
     }
     log.scrollTop = log.scrollHeight;
   };
@@ -498,7 +499,7 @@ function renderSupport() {
   });
 }
 
-/* ===== DASHBOARD (تفويض للوحة الإدارة) ===== */
+/* ===== DASHBOARD (تفويض) ===== */
 function renderDashboard() {
   if (window.ADMIN_ROUTES && window.ADMIN_ROUTES["/dashboard"]) {
     window.ADMIN_ROUTES["/dashboard"]();
