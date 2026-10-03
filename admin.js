@@ -28,7 +28,6 @@ async function adminLogout() {
   toast("✓ تم تسجيل الخروج");
 }
 
-/* ===== بوابة الإدارة ===== */
 async function renderAdminLogin() {
   const app = document.getElementById("app");
   const user = await getCurrentAdmin();
@@ -48,8 +47,8 @@ async function renderAdminLogin() {
           <div class="card-body">
             <h3 style="margin-bottom:16px">تسجيل الدخول</h3>
             <form id="loginForm" style="display:grid;gap:14px">
-              <input class="form-field" name="email" type="email" placeholder="البريد الإلكتروني" required autocomplete="email">
-              <input class="form-field" name="password" type="password" placeholder="كلمة المرور" required autocomplete="current-password" minlength="8">
+              <input class="form-field" name="email" type="email" placeholder="البريد الإلكتروني" required>
+              <input class="form-field" name="password" type="password" placeholder="كلمة المرور" required>
               <button class="btn primary block" type="submit" id="loginBtn">دخول</button>
               <p id="loginError" style="color:var(--brick);font-size:13px;display:none"></p>
             </form>
@@ -58,15 +57,9 @@ async function renderAdminLogin() {
         <div class="card reveal">
           <div class="card-body">
             <h3 style="margin-bottom:12px">🛡️ منطقة آمنة</h3>
-            <p style="color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:12px">
-              هذه المنطقة محمية بـ Supabase Auth. فقط المشرفون يمكنهم الوصول.
+            <p style="color:var(--muted);font-size:13px;line-height:1.8">
+              محمية بـ Supabase Auth. فقط المشرفون يمكنهم الوصول.
             </p>
-            <ul style="color:var(--muted);font-size:12.5px;line-height:1.9;padding-inline-start:20px">
-              <li>كلمة المرور مشفّرة</li>
-              <li>جلسة آمنة JWT</li>
-              <li>RLS فعّال</li>
-              <li>سجل وصول متاح</li>
-            </ul>
           </div>
         </div>
       </div>
@@ -115,7 +108,7 @@ async function renderAdminHome(user) {
       <div style="height:32px"></div>
       <div class="dashboard-grid">
         <a class="dashboard-card reveal" href="#/dashboard/books" data-route>
-          <h3>📚 الكتب</h3><p>إضافة وتعديل الكتب مع صور الأغلفة.</p>
+          <h3>📚 الكتب</h3><p>إضافة وتعديل الكتب.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/announcements" data-route>
           <h3>📢 الإعلانات</h3><p>نشر وإدارة الإعلانات.</p>
@@ -124,13 +117,13 @@ async function renderAdminHome(user) {
           <h3>🏆 المسابقات</h3><p>إنشاء ومتابعة المسابقات.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/visitors" data-route>
-          <h3>👥 الزوار</h3><p>سجل الزوار مع تصدير CSV.</p>
+          <h3>👥 الزوار</h3><p>سجل الزوار مع CSV.</p>
         </a>
         <a class="dashboard-card reveal" href="#/dashboard/borrowings" data-route>
-          <h3>📖 الإعارات</h3><p>تسجيل استعارة وإرجاع الكتب.</p>
+          <h3>📖 الإعارات</h3><p>تسجيل استعارة وإرجاع.</p>
         </a>
         <a class="dashboard-card reveal" href="https://supabase.com/dashboard/project/zaztjrfhilmuvpcrrbji" target="_blank" rel="noopener">
-          <h3>🗄️ قاعدة البيانات</h3><p>الوصول المباشر إلى Supabase.</p>
+          <h3>🗄️ قاعدة البيانات</h3><p>Supabase مباشرة.</p>
         </a>
       </div>
     </section>
@@ -147,7 +140,6 @@ async function renderAdminHome(user) {
   } catch (e) { console.warn(e); }
 }
 
-/* ===== الكتب ===== */
 async function renderAdminBooks() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -161,7 +153,7 @@ async function renderAdminBooks() {
         </div>
       </div>
       <div id="bookFormContainer"></div>
-      <div id="booksList" style="overflow:hidden;border-radius:16px"></div>
+      <div id="booksList"></div>
     </section>
   `;
   refreshBooksList();
@@ -264,7 +256,6 @@ async function deleteBook(id, title) {
   refreshBooksList();
 }
 
-/* ===== الإعلانات ===== */
 async function renderAdminAnnouncements() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -337,7 +328,6 @@ async function deleteAnn(id) {
   refreshAnnList();
 }
 
-/* ===== المسابقات ===== */
 async function renderAdminCompetitions() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -410,7 +400,6 @@ async function deleteComp(id) {
   refreshCompList();
 }
 
-/* ===== الزوار ===== */
 async function renderAdminVisitors() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
@@ -476,7 +465,6 @@ function exportVisitorsCSV() {
   toast("✓ تم التصدير");
 }
 
-/* ===== الإعارات ===== */
 async function renderAdminBorrowings() {
   const user = await getCurrentAdmin();
   if (!user) return navigate("/dashboard");
