@@ -5,7 +5,7 @@
 
 const SUPABASE_URL = "https://zaztjrfhilmuvpcrrbji.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphenRqcmZoaWxtdXZwY3JyYmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5Nzk4MjUsImV4cCI6MjEwNjU1NTgyNX0.HL8t5BSTufF4NwN87RZHuM6vdvotMA03cBQFEwk9G6Y";
-const GEMINI_KEY = "AQ.Ab8RN6IccYBh4dsEGcFXNmS-Z6X";
+const GEMINI_KEY = "AQ.Ab8RN6IccYBh4dsEGcFXNmS-Z6XePRVD31_qw-h2K7UITbY6bw";
 
 /* تهيئة عميل Supabase */
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
