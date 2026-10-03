@@ -4,18 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0A1628">
-<meta name="description" content="مكتبة الأمين الذكية — منصة معرفية تحت إشراف الأستاذ محمد حامد">
+<meta name="description" content="مكتبة الأمين الذكية">
 <title>مكتبة الأمين الذكية | مدرسة الأمين الابتدائية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A1628'/><rect x='20' y='22' width='12' height='56' fill='%23C9A961'/><rect x='28' y='30' width='52' height='4' fill='%23FAF7F0'/><rect x='28' y='66' width='52' height='4' fill='%23FAF7F0'/></svg>">
-<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="site-shell">
 
+<div class="site-shell">
   <header class="topbar">
     <a class="brand" href="#/" data-route>
       <span class="brand-mark"><span></span></span>
@@ -32,14 +30,12 @@
       <a href="#/support" data-route>الدعم الذكي</a>
     </nav>
     <div class="top-actions">
-      <button class="icon-button" id="themeToggle" type="button" aria-label="الوضع الليلي">◐</button>
+      <button class="icon-button" id="themeToggle" type="button">◐</button>
       <a class="admin-link" href="#/dashboard" data-route><span>لوحة التحكم</span><b>↗</b></a>
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة">☰</button>
+      <button class="menu-toggle" id="menuToggle" type="button">☰</button>
     </div>
   </header>
-
   <main id="app" tabindex="-1"></main>
-
   <footer class="footer">
     <div>
       <div class="footer-brand">
@@ -58,8 +54,8 @@
       <strong>جميع الحقوق محفوظة للأستاذ محمد حامد</strong>
     </div>
   </footer>
-
 </div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
